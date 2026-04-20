@@ -1,0 +1,149 @@
+<%- include('../partials/head') %>
+<%- include('../partials/navbar') %>
+
+<section class="section page-hero">
+  <div class="section-inner">
+    <p class="section-tag">Contact</p>
+    <h1 class="section-heading">Let's work together.</h1>
+    <p class="body-text" style="max-width:520px">
+      I'm actively looking for backend engineering roles and internships.
+      If you're building something interesting, my inbox is open.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-inner">
+    <div class="contact-grid">
+
+      <!-- Info -->
+      <div class="fade-up">
+        <div class="contact-info-item">
+          <div class="contact-icon">✉️</div>
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-value">
+              <a href="mailto:aywinner.dev@gmail.com">aywinner.dev@gmail.com</a>
+            </div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">💻</div>
+          <div>
+            <div class="contact-label">GitHub</div>
+            <div class="contact-value">
+              <a href="https://github.com/Sola-ayomide" target="_blank">github.com/Sola-ayomide</a>
+            </div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">🔗</div>
+          <div>
+            <div class="contact-label">LinkedIn</div>
+            <div class="contact-value">
+              <a href="https://linkedin.com/in/ayomide-ojo-sola" target="_blank">linkedin.com/in/ayomide-ojo-sola</a>
+            </div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">🐦</div>
+          <div>
+            <div class="contact-label">X (Twitter)</div>
+            <div class="contact-value">
+              <a href="https://x.com/sola_ayomide" target="_blank">x.com/sola_ayomide</a>
+            </div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">📍</div>
+          <div>
+            <div class="contact-label">Location</div>
+            <div class="contact-value">Lagos, Nigeria 🇳🇬 · Open to remote</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="fade-up fade-delay">
+        <div class="form-card">
+          <h2 class="form-card-title">Send a message</h2>
+
+          <div id="form-success" class="form-alert form-alert-success" style="display:none">
+            ✅ Message sent! I'll get back to you soon.
+          </div>
+          <div id="form-error" class="form-alert form-alert-error" style="display:none"></div>
+
+          <form id="contactForm">
+            <div class="form-group">
+              <label class="form-label" for="name">Your name</label>
+              <input class="form-input" id="name" name="name" type="text" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="email">Email address</label>
+              <input class="form-input" id="email" name="email" type="email" placeholder="john@example.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="subject">Subject</label>
+              <input class="form-input" id="subject" name="subject" type="text" placeholder="Job opportunity / Collaboration / Say hi" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="message">Message</label>
+              <textarea class="form-textarea" id="message" name="message" placeholder="Tell me what you're working on..." required></textarea>
+            </div>
+            <button type="submit" class="form-submit" id="submitBtn">
+              <span id="btnText">Send message</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn     = document.getElementById('submitBtn');
+  const btnText = document.getElementById('btnText');
+  const success = document.getElementById('form-success');
+  const error   = document.getElementById('form-error');
+
+  btnText.textContent = 'Sending...';
+  btn.disabled = true;
+  success.style.display = 'none';
+  error.style.display   = 'none';
+
+  const body = {
+    name:    e.target.name.value,
+    email:   e.target.email.value,
+    subject: e.target.subject.value,
+    message: e.target.message.value,
+  };
+
+  try {
+    const res  = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      success.style.display = 'block';
+      e.target.reset();
+    } else {
+      error.textContent    = data.message;
+      error.style.display  = 'block';
+    }
+  } catch (err) {
+    error.textContent   = 'Network error. Please try again.';
+    error.style.display = 'block';
+  } finally {
+    btnText.textContent = 'Send message';
+    btn.disabled = false;
+  }
+});
+</script>
+
+<%- include('../partials/footer') %>

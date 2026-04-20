@@ -1,0 +1,43 @@
+<%- include('../partials/head') %>
+<%- include('../partials/navbar') %>
+
+<section class="section page-hero">
+  <div class="section-inner">
+    <p class="section-tag">Blog / Devlog</p>
+    <h1 class="section-heading">Writing &amp; learnings.</h1>
+    <p class="body-text" style="max-width:520px">
+      Thoughts on backend engineering, things I've built.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-inner">
+    <% if (posts.length === 0) { %>
+      <div class="empty-state">
+        <p>No posts yet — check back soon.</p>
+      </div>
+    <% } else { %>
+      <div class="blog-grid">
+        <% posts.forEach((post, i) => { %>
+        <a href="/blog/<%= post.slug %>" class="blog-card fade-up" style="--delay:<%=i*80%>ms">
+          <div class="blog-date">
+            <%= post.createdAt.toLocaleDateString('en-US',{month:'short',year:'numeric'}).toUpperCase() %>
+            &nbsp;·&nbsp; <%= post.readTime %> MIN READ
+          </div>
+          <h2 class="blog-title"><%= post.title %></h2>
+          <p class="blog-excerpt"><%= post.excerpt %></p>
+          <% if (post.tags && post.tags.length) { %>
+          <div class="blog-tags">
+            <% post.tags.forEach(t => { %><span class="tag"><%= t %></span><% }) %>
+          </div>
+          <% } %>
+          <span class="blog-read-more">Read more →</span>
+        </a>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

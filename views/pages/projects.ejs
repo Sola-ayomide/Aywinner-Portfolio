@@ -1,0 +1,51 @@
+<%- include('../partials/head') %>
+<%- include('../partials/navbar') %>
+
+<section class="section page-hero">
+  <div class="section-inner">
+    <p class="section-tag">Projects</p>
+    <h1 class="section-heading">Things I've built.</h1>
+    <p class="body-text" style="max-width:520px">
+      A collection of backend projects — from capstone APIs to standalone tools.
+      Every project is on GitHub.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-inner">
+    <div class="projects-grid">
+      <% projects.forEach((p, i) => { %>
+      <div class="project-card <%= p.featured ? 'featured' : '' %> fade-up" style="--delay:<%=i*80%>ms">
+        <div class="project-thumb <%= p.thumbClass %>">
+          <div class="project-thumb-pattern"></div>
+          <div class="project-thumb-label">
+            <span class="project-thumb-name"><%= p.name %></span>
+            <span class="project-thumb-sub"><%= p.type.toUpperCase() %></span>
+          </div>
+        </div>
+        <div class="project-body">
+          <div class="project-badges">
+            <span class="project-badge <%= p.badgeClass %>"><%= p.type %></span>
+          </div>
+          <h2 class="project-title"><%= p.name %></h2>
+          <p class="project-desc"><%= p.description %></p>
+          <div class="project-stack">
+            <% p.techStack.forEach(t => { %><span class="tag"><%= t %></span><% }) %>
+          </div>
+          <div class="project-links">
+            <% if (p.github) { %>
+            <a href="<%= p.github %>" class="project-link gh" target="_blank" rel="noopener">GitHub →</a>
+            <% } %>
+            <% if (p.live) { %>
+            <a href="<%= p.live %>" class="project-link live" target="_blank" rel="noopener">Live demo ↗</a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

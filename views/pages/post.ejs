@@ -1,0 +1,39 @@
+<%- include('../partials/head') %>
+<%- include('../partials/navbar') %>
+
+<section class="section page-hero">
+  <div class="section-inner post-hero">
+    <a href="/blog" class="btn-ghost" style="margin-bottom:24px;display:inline-flex">← Back to blog</a>
+
+    <% if (post.tags && post.tags.length) { %>
+    <div class="blog-tags" style="margin-bottom:16px">
+      <% post.tags.forEach(t => { %><span class="tag"><%= t %></span><% }) %>
+    </div>
+    <% } %>
+
+    <h1 class="post-title"><%= post.title %></h1>
+
+    <div class="post-meta">
+      <span>
+        <%= post.createdAt.toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric'}) %>
+      </span>
+      <span class="post-meta-dot">·</span>
+      <span><%= post.readTime %> min read</span>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-inner">
+    <div class="post-body prose">
+      <%- contentHtml %>
+    </div>
+
+    <div class="post-footer">
+      <a href="/blog" class="btn-secondary">← All posts</a>
+      <a href="/contact" class="btn-primary">Work with me →</a>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>
