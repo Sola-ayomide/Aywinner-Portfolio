@@ -16,7 +16,7 @@ router.get('/projects/:slug',   ctrl.getProject);
 router.get('/blog',             ctrl.getPosts);
 router.get('/blog/:slug',       ctrl.getPost);
 router.post('/contact', contactLimiter, ctrl.postContact);
-router.get('/api/resume',           ctrl.getResume);
+router.get('/resume',           ctrl.getResume);
 router.get('/randomjoke',       ctrl.getRandomJoke);
 
 export default router;

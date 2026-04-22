@@ -1,8 +1,13 @@
+import { fileURLToPath } from 'url';
+import path from 'path';
+import fs from 'fs';
 import projects from '../data/projects.js';
 import Post from '../models/Post.js';
 import Message from '../models/Message.js';
 import { sendContactEmail } from '../utils/mailer.js';
-import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname  = path.dirname(__filename);
 
 // GET /api/projects
 export const getProjects = (req, res) => {
@@ -44,7 +49,6 @@ export const postContact = async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
 
-    // Basic validation
     if (!name || !email || !subject || !message) {
       return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
@@ -52,30 +56,46 @@ export const postContact = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid email address.' });
     }
 
-    // Save to MongoDB
-    await Message.create({ name, email, subject, message });
+    // Try saving to MongoDB — but don't fail if DB is down
+    try {
+      await Message.create({ name, email, subject, message });
+      console.log('Message saved to MongoDB');
+    } catch (dbErr) {
+      console.error('MongoDB save failed (continuing anyway):', dbErr.message);
+    }
 
-    // Send email (non-blocking — don't fail the request if email errors)
+    // Send email regardless of MongoDB status
     sendContactEmail({ name, email, subject, message }).catch(err => {
       console.error('Email send error:', err.message);
     });
 
+    // Always return success to the user
     res.json({ success: true, message: "Message received! I'll get back to you soon." });
+
   } catch (err) {
-    console.error(err);
+    console.error('Contact error:', err.message);
     res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
   }
 };
-
 // GET /api/resume
 export const getResume = (req, res) => {
   const filePath = path.join(__dirname, '../public/files/Ayomide_OjoSola_CV.pdf');
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({
+      success: false,
+      message: 'CV file not found. Please add it to public/files/'
+    });
+  }
+
   res.download(filePath, 'Ayomide_OjoSola_CV.pdf', (err) => {
-    if (err) {
-      res.status(404).json({ success: false, message: 'CV file not found. Add it to public/files/' });
+    if (err && !res.headersSent) {
+      console.error('Resume download error:', err.message);
+      res.status(500).json({ success: false, message: 'Error downloading file.' });
     }
   });
 };
+
 
 // GET /api/randomjoke
 const jokes = [
